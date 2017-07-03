@@ -19,8 +19,6 @@ public class HelloWorld {
     @Autowired
     MessageSender messageSender;
 
-
-
     @RequestMapping("")
     public String index() {
         return "Greetings from Spring Boot!";
@@ -30,7 +28,7 @@ public class HelloWorld {
     public String email(@PathVariable String id, @PathVariable String mes) {
 
         Email email = new Email(id,mes);
-    messageSender.send(email);
+        messageSender.send(email);
         return "OK";
 
     }

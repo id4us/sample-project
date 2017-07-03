@@ -1,24 +1,26 @@
 package com.asterik.utility.snapshot.messageUsingJms;
 
 
+import com.asterik.utility.snapshot.dto.Person;
 import lombok.Data;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jms.core.JmsTemplate;
 
 import javax.jms.Destination;
-import javax.jms.JMSException;
-import javax.jms.TextMessage;
-
 @Data
-public class SpringJmsConsumer {
+public class SpringJmsPersonConsumer {
 
-
-    @Autowired
     private JmsTemplate jmsTemplate;
     private Destination destination;
 
-    public String receiveMessage() throws JMSException {
-        TextMessage textMessage = (TextMessage) jmsTemplate.receive(destination);
-        return textMessage.getText();
+    public Person receiveMessage(){
+
+        Person person = (Person) getJmsTemplate().receiveAndConvert(destination);
+        return person;
+
+
     }
+
+
+
 }

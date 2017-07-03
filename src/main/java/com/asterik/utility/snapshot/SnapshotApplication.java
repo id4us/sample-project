@@ -2,6 +2,8 @@ package com.asterik.utility.snapshot;
 
 import com.asterik.utility.snapshot.email.Email;
 import com.asterik.utility.snapshot.email.MessageSender;
+import com.asterik.utility.snapshot.helperUtils.PersonMessageConvertor;
+import com.asterik.utility.snapshot.messageUsingJms.SpringJmsPersonProducer;
 import com.asterik.utility.snapshot.messageUsingJms.SpringJmsProducer;
 import org.apache.activemq.ActiveMQConnectionFactory;
 import org.apache.activemq.command.ActiveMQQueue;
@@ -37,7 +39,14 @@ public class SnapshotApplication {
 		jmsT.setConnectionFactory(connectionFactory());
 		jmsT.setReceiveTimeout(10000);
 		jmsT.setConnectionFactory(connectionFactory());
+		jmsT.setMessageConverter(personMessageConvertor());
 		return jmsT;
+	}
+
+	@Bean
+	public PersonMessageConvertor personMessageConvertor(){
+		PersonMessageConvertor personMessageConvertor = new PersonMessageConvertor();
+		return personMessageConvertor;
 	}
 
 	@Bean
@@ -63,34 +72,37 @@ public class SnapshotApplication {
 
 
 
-	@Bean
-	public JmsListenerContainerFactory<?> myFactory(ConnectionFactory connectionFactory,
-													DefaultJmsListenerContainerFactoryConfigurer configurer) {
-		DefaultJmsListenerContainerFactory factory = new DefaultJmsListenerContainerFactory();
-		// This provides all boot's default to this factory, including the message converter
-		configurer.configure(factory, connectionFactory);
-		// You could still override some of Boot's default if necessary.
-		return factory;
-	}
+//	@Bean
+//	public JmsListenerContainerFactory<?> myFactory(ConnectionFactory connectionFactory,
+//													DefaultJmsListenerContainerFactoryConfigurer configurer) {
+//		DefaultJmsListenerContainerFactory factory = new DefaultJmsListenerContainerFactory();
+//		// This provides all boot's default to this factory, including the message converter
+//		configurer.configure(factory, connectionFactory);
+//		// You could still override some of Boot's default if necessary.
+//		return factory;
+//	}
 
-	@Bean // Serialize message content to json using TextMessage
-	public MessageConverter jacksonJmsMessageConverter() {
-		MappingJackson2MessageConverter converter = new MappingJackson2MessageConverter();
-		converter.setTargetType(MessageType.TEXT);
-		converter.setTypeIdPropertyName("_type");
-		return converter;
-	}
+//	@Bean // Serialize message content to json using TextMessage
+//	public MessageConverter jacksonJmsMessageConverter() {
+//		MappingJackson2MessageConverter converter = new MappingJackson2MessageConverter();
+//		converter.setTargetType(MessageType.TEXT);
+//		converter.setTypeIdPropertyName("_type");
+//		return converter;
+//	}
 
 
 	public static void main(String[] args) {
 
 		ConfigurableApplicationContext context = SpringApplication.run(SnapshotApplication.class, args);
 
-		JmsTemplate jmsTemplate = context.getBean(JmsTemplate.class);
+		JmsTemplate jmsTemplate = (JmsTemplate) context.getBean("jmsTemplate");
+
+		SpringJmsPersonProducer springJmsPersonProducer = (SpringJmsPersonProducer) context.getBean("springJmsPersonProducer");
+		springJmsPersonProducer.setJmsTemplate(jmsTemplate);
 
 		// Send a message with a POJO - the template reuse the message converter
 		System.out.println("Sending an email message.");
-		Email email = new Email("info@example.com", "HelloWorld");
+	//	Email email = new Email("info@example.com", "HelloWorld");
 
 		jmsTemplate.convertAndSend("mailbox", "shilpa");
 	}
