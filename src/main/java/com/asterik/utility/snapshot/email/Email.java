@@ -1,8 +1,6 @@
 package com.asterik.utility.snapshot.email;
 
-/**
- * Created by shilpa on 12/06/2017.
- */
+
 public class Email {
     private String to;
     private String body;
