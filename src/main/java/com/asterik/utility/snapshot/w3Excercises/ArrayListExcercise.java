@@ -1,5 +1,8 @@
 package com.asterik.utility.snapshot.w3Excercises;
 
+import com.asterik.utility.snapshot.annotations.DevName;
+import com.sun.xml.internal.bind.v2.model.annotation.RuntimeAnnotationReader;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -59,17 +62,14 @@ public class ArrayListExcercise {
             initialList.add(0,a);
             System.out.printf("The new list is "+ initialList.toString());
         }
-
-
-
     }
 
 
+    @DevName(name= "Shilpa")
     private static class RemoveOddElements{
 
         List<Object> initialList= new ArrayList<>();
         public RemoveOddElements(List<Object> list) {
-
             this.initialList = list;
         }
 
