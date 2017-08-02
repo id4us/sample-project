@@ -104,7 +104,7 @@ public class SnapshotApplication {
 		System.out.println("Sending an email message.");
 	//	Email email = new Email("info@example.com", "HelloWorld");
 
-		jmsTemplate.convertAndSend("mailbox", "shilpa");
+		//jmsTemplate.convertAndSend("mailbox", "shilpa");
 	}
 
 
